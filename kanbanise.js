@@ -56,8 +56,16 @@
     $(div).append($.tmpl('col', {title: 'Done', id: 'col4'}));
     $(div).find('#col4').append(col4Content);
 
+    // Close Kanbanise on click
     $(div).click(function() {
         $('#kanban').remove();
+    });
+
+    // Close Kanbanise on `esc`
+    $(div).keypress(function(e){
+      if(e.keyCode == 27){
+        $('#kanban').remove();
+      }
     });
     
     $('body').append(div);
