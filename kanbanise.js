@@ -3,6 +3,7 @@
 (function () {
     "use strict";
 
+    var VERSION = '0.3';
     var $ = jQuery;
 
     var issues = {
@@ -55,6 +56,7 @@
     $(div).find('#col3').append(col3Content);
     $(div).append($.tmpl('col', {title: 'Done', id: 'col4'}));
     $(div).find('#col4').append(col4Content);
+    $(div).append($('<div style="clear:both;color:#fff;font-size:0.7em">Kanbanise ' + VERSION + '</div>'));
 
     $(div).click(function() {
         $('#kanban').remove();
