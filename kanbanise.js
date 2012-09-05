@@ -29,18 +29,40 @@
                 category = 'resolved';
                 break;            
         }
+
+        var storyPoints = null;
+        var assignedTo = null;
+
+        if( jQuery(value).children('.cf_30').length > 0) {
+            storyPoints = jQuery(value).children('.cf_30')[0].innerText;
+            if(storyPoints && storyPoints.length > 0) {
+                storyPoints = storyPoints + " story points";
+            }
+        }
+
+    
+        if( jQuery(value).children('.assigned_to').length > 0) {
+            assignedTo = jQuery(value).children('.assigned_to')[0].innerText;
+            if(assignedTo && assignedTo.length > 0) {
+                assignedTo = "Assigned to " + assignedTo;
+            }
+        }
+
         issues[category].push({
             'priority': jQuery(value).children('.priority')[0].innerText,
             'subject': jQuery(value).children('.subject')[0].innerText,
-            'assignedTo': jQuery(value).children('.assigned_to')[0].innerText
+            'assignedTo': assignedTo,
+            'storyPoints': storyPoints
         });
     });
 
     var div = $('<div id="kanban" style="z-index:1000;position:absolute;left:0;top:0;width:100%;min-height:100%;background:#164B69;"></div>');
 
     $.template('ticket', '<div class="card ticket" style="background: #fefefe; border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; padding: 5px; ">'
+                        + '<span style="float:right;font-size:11px;" class="story-points">${storyPoints}</span>'
                         + '<h3 style="display: block; margin-bottom: 0.2em; overflow: hidden;">${subject}</h3>'
-                        + '<span class="assigned-to" style="display: block; font-size: 11px; text-transform: uppercase;">Assigned to ${assignedTo}</span></div>');
+                        + '<span class="assigned-to" style="display: block; font-size: 11px; text-transform: uppercase;">${assignedTo}</span>'
+                        + '</div>');
     $.template('col', '<div class="list columnWrapper" style="float:left;width: 25%;"><div id="${id}" class="column" style="margin:10px;padding:10px;"><h1 style="color: #fff;margin-bottom:4px;display:block";>${title}</h1></div></div>');
 
     var col1Content = $.tmpl('ticket', issues['backlog']);
