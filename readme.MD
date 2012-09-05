@@ -1,1 +1,0 @@
-Please see kanbanise.html in this project for documentation

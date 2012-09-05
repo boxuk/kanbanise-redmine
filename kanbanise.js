@@ -40,17 +40,21 @@
     $.template('ticket', '<div class="card ticket" style="margin-bottom:7px;padding:5px;background: #fff">'
                         + '<h3 style="display:block;overflow:hidden">${subject}</h3>'
                         + 'Assigned to ${assignedTo}</div>');
-    $.template('col', '<div class="list columnWrapper" style="float:left;width: 25%;"><div class="column" style="margin:10px;padding:10px;"><h1 style="color: #fff;margin-bottom:4px;display:block";>${title}</h1></div></div>');
+    $.template('col', '<div class="list columnWrapper" style="float:left;width: 25%;"><div id="${id}" class="column" style="margin:10px;padding:10px;"><h1 style="color: #fff;margin-bottom:4px;display:block";>${title}</h1></div></div>');
 
     var col1Content = $.tmpl('ticket', issues['backlog']);
     var col2Content = $.tmpl('ticket', issues['inProgress']);
     var col3Content = $.tmpl('ticket', issues['resolved']);
     var col4Content = $.tmpl('ticket', issues['done']);
 
-    $(div).append($.tmpl('col', {title: 'Backlog'})).find('.column').append(col1Content);
-    $(div).append($.tmpl('col', {title: 'In progress'})).find('.column').append(col2Content);
-    $(div).append($.tmpl('col', {title: 'Resolved/with QA'})).find('.column').append(col3Content);
-    $(div).append($.tmpl('col', {title: 'Done'})).find('.column').append(col4Content);
+    $(div).append($.tmpl('col', {title: 'Backlog', id: 'col1'}));
+    $(div).find('#col1').append(col1Content);
+    $(div).append($.tmpl('col', {title: 'In progress', id: 'col2'}));
+    $(div).find('#col2').append(col2Content);
+    $(div).append($.tmpl('col', {title: 'Resolved/with QA', id: 'col3'}));
+    $(div).find('#col3').append(col3Content);
+    $(div).append($.tmpl('col', {title: 'Done', id: 'col4'}));
+    $(div).find('#col4').append(col4Content);
 
     $(div).click(function() {
         $('#kanban').remove();
