@@ -35,11 +35,11 @@
         });
     });
 
-    var div = $('<div id="kanban" style="z-index:1000;position:absolute;left:0;top:0;width:100%;min-height:100%;background:#164B69"></div>');
+    var div = $('<div id="kanban" style="z-index:1000;position:absolute;left:0;top:0;width:100%;min-height:100%;background:#164B69;"></div>');
 
-    $.template('ticket', '<div class="card ticket" style="margin-bottom:7px;padding:5px;background: #fff">'
-                        + '<h3 style="display:block;overflow:hidden">${subject}</h3>'
-                        + 'Assigned to ${assignedTo}</div>');
+    $.template('ticket', '<div class="card ticket" style="border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin-bottom: 0 0 7px 0; padding: 5px; ">'
+                        + '<h3 style="display: block; margin-bottom: 0.2em; overflow: hidden;">${subject}</h3>'
+                        + '<span class="assigned-to" style="display: block; font-size: 11px; text-transform: uppercase;">Assigned to ${assignedTo}</span></div>');
     $.template('col', '<div class="list columnWrapper" style="float:left;width: 25%;"><div id="${id}" class="column" style="margin:10px;padding:10px;"><h1 style="color: #fff;margin-bottom:4px;display:block";>${title}</h1></div></div>');
 
     var col1Content = $.tmpl('ticket', issues['backlog']);
