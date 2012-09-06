@@ -80,8 +80,16 @@
     $(div).find('#col4').append(col4Content);
     $(div).append($('<div style="clear:both;color:#fff;font-size:0.7em;margin-left:20px;">Kanbanise ' + VERSION + ' - brought to you by <a href="http://www.boxuk.com/">Box UK</a></div>'));
 
+    // Close Kanbanise on click
     $(div).click(function() {
         $('#kanban').remove();
+    });
+
+    // Close Kanbanise on `esc`
+    $(div).keypress(function(e){
+      if(e.keyCode == 27){
+        $('#kanban').remove();
+      }
     });
     
     $('body').append(div);
