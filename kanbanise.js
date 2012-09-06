@@ -42,11 +42,22 @@ if(typeof(jQuery) === 'undefined') {
 
     if($('body.action-index') == null || $('body.action-index').length === 0) {
         alert("This page doesn't look like a Redmine issues list! Please find some issues");
-        return
+        return;
     }
 
     var VERSION = '0.5';
-    var API_KEY = '599ce5e8419a93ffba0a3f3ef7164fe96804c46d';
+    var API_KEY = null;
+
+    function loadApiKey() {
+        
+        jQuery.ajax('http://gavd-desktop:3000/my/account', {complete: function(jqHRX, text) {
+            var responseText = jqHRX.responseText;
+            var start = responseText.indexOf("id='api-access-key'");
+            var hunk = responseText.substring(start, start+100);
+            var startKey = hunk.indexOf('>') + 1;
+            API_KEY = hunk.substring(startKey, startKey + 40);
+        }});
+    }
 
     function getIssues() {
 
@@ -171,6 +182,10 @@ if(typeof(jQuery) === 'undefined') {
                         return; // no action if unrecognised
                 }
 
+                if (API_KEY === null) {
+                    alert("No API key was set. Are you definitely logged in?");
+                }
+
                 var issueId = ui.item[0].id.replace('issue-', '');
                 // only works if status codes are defaults that come with redmine! No funny business!
                 jQuery.ajax('http://gavd-desktop:3000/issues/' + issueId + '.json', {
@@ -208,6 +223,7 @@ if(typeof(jQuery) === 'undefined') {
     }
 
     // main
+    loadApiKey();
     addStyling();
     var issues = getIssues();
     var div = createBoard(issues);
