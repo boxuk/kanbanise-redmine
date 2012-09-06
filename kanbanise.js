@@ -78,7 +78,7 @@
     $(div).find('#col3').append(col3Content);
     $(div).append($.tmpl('col', {title: 'Done', id: 'col4'}));
     $(div).find('#col4').append(col4Content);
-    $(div).append($('<div style="clear:both;color:#fff;font-size:0.7em;margin-left:20px;">Kanbanise ' + VERSION + '</div>'));
+    $(div).append($('<div style="clear:both;color:#fff;font-size:0.7em;margin-left:20px;">Kanbanise ' + VERSION + ' - brought to you by <a href="http://www.boxuk.com/">Box UK</a></div>'));
 
     $(div).click(function() {
         $('#kanban').remove();
