@@ -106,7 +106,7 @@
 
             $.template('ticket', '<div id="issue-${id}" class="card ticket">'
                                + '<span class="story-points">${storyPoints}</span>'
-                               + '<h3>${subject}</h3>'
+                               + '<h3><a href="/issues/${id}">${subject}</a></h3>'
                                + '<span class="assigned-to">${assignedTo}</span>'
                                + '</div>');
             $.template('col', '<div class="list columnWrapper">'
