@@ -190,7 +190,6 @@
                         },
                         processData: false,
                         dataType: 'json',
-                        //data: '{issue:{status_id:"' + newStatusId + '"}}',
                         data: JSON.stringify({issue:{status_id: newStatusId}}),
                         type: 'PUT',
                         complete: function(jqHXR, textStatus) {
