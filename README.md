@@ -12,39 +12,5 @@ Changes to Redmine
 ------------------
 
 See http://www.redmine.org/issues/11797 - in short, you have to patch one
-file - at least you do in Redmine 1.3.3, which this was build against:
-
-<pre><code class="diff">
-From 9db6f1503c9b63a604254a46b37c8ca35f8f5e81 Mon Sep 17 00:00:00 2001
-From: Gavin Davies <gavin.davies@boxuk.com>
-Date: Mon, 10 Sep 2012 15:36:10 +0100
-Subject: [PATCH] Allowing the API to do PUT and POST access without logging
- the user out, provided a valid API key is supplied. Allows
- bookmarklets to work without hosing user's session.
-
-Making changes that Gareth recommended
----
- app/controllers/application_controller.rb |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
-
-diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
-index 483dcf0..d1ba117 100644
---- a/app/controllers/application_controller.rb
-+++ b/app/controllers/application_controller.rb
-@@ -28,6 +28,13 @@ class ApplicationController < ActionController::Base
-
-   protect_from_forgery
-   def handle_unverified_request
-+    if request.post? || request.put?
-+      if User.find_by_api_key(api_key_from_request)
-+        # this is an API request, don't log the user out
-+        return 
-+      end
-+    end 
-+
-     super
-     cookies.delete(:autologin)
-   end
--- 
-1.7.5.4
-</code></pre>
+file - at least you do in Redmine 1.3.3, which this was build against. See the
+patch file included.
