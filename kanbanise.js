@@ -10,7 +10,18 @@
         }
     }
 
+
     function init_kanbanise() {
+
+        var msgWin = null;
+        function showMessage(msg) {
+            if(msgWin === null) {
+                $('#msgWin').remove();
+                msgWin = $('<div id="msgWin" style=""></div>');
+                $('body').append(msgWin);
+            }
+            $(msgWin).text(msg).show();
+        }
 
         var $ = jQuery;
 
@@ -19,7 +30,7 @@
             return;
         }
 
-        var VERSION = '0.5';
+        var VERSION = '0.6';
         var API_KEY = null;
         // note: redmineRoot will not work if it's installed anywhere other than /, so
         // foo.com/redmine will not work
@@ -29,14 +40,19 @@
          * Make a request to the account page and extract the API access key
          * User has to be logged in for this to work
          */    
-        function loadApiKey() {
-            
+        function loadApiKey(issues) {
+            showMessage("Loading API key...");
             jQuery.ajax(redmineRoot + 'my/account', {complete: function(jqHRX, text) {
                 var responseText = jqHRX.responseText;
                 var start = responseText.indexOf("id='api-access-key'");
                 var hunk = responseText.substring(start, start+100);
                 var startKey = hunk.indexOf('>') + 1;
                 API_KEY = hunk.substring(startKey, startKey + 40);
+
+                setUpSorting();
+                showMessage("Loaded API key");
+
+                $(msgWin).delay(3000).fadeOut('slow');
             }});
         }
 
@@ -102,8 +118,14 @@
         /**
          * Draw a Kanban-style board on screen
          */
-        function createBoard(issues) {
+        function createBoard() {
+            $('div#kanban').remove();
             var div = $('<div id="kanban"></div>');
+            return div;
+        }
+
+        function drawBoard(issues) {
+            var div = $('div#kanban');
 
             $.template('ticket', '<div id="issue-${id}" class="card ticket">'
                                + '<span class="story-points">${storyPoints}</span>'
@@ -183,7 +205,7 @@
 
                     var issueId = ui.item[0].id.replace('issue-', '');
                     // only works if status codes are defaults that come with redmine! No funny business!
-
+                    showMessage("Saving changes...");
                     jQuery.ajax(redmineRoot + 'issues/' + issueId + '.json', {
                         headers: {
                             'X-Redmine-API-Key': API_KEY,
@@ -194,6 +216,7 @@
                         data: JSON.stringify({issue:{status_id: newStatusId}}),
                         type: 'PUT',
                         complete: function(jqHXR, textStatus) {
+                            $(msgWin).fadeOut('slow');
                         }
                     });
                 },
@@ -202,7 +225,7 @@
         }
 
         /**
-         * Add CSS rules
+         * Add CSS rules to document header
          */
         function addStyling() {
             $("<style type='text/css'> .ui-state-hover{ background: blue !important; }"
@@ -216,17 +239,18 @@
             + ".columnWrapper { float:left;width: 25%; }"
             + ".assigned-to {display: block; font-size: 11px; text-transform: uppercase;}"
             + ".credits { clear:both;color:#fff;font-size:0.7em;margin-left:20px;margin-bottom: 20px;}"
-            + ".credits a { color: #fff; font-weight: bold"
+            + ".credits a { color: #fff; font-weight: bold}"
+            + "div#msgWin {position:fixed;right:0px;top:0px;z-index:30000;background:black;border:white 1px solid;padding: 3px; color: #fff}"
             + "</style>").appendTo("head");
         }
 
         // main
-        loadApiKey();
         addStyling();
         var issues = getIssues();
-        var div = createBoard(issues);
+        var div = createBoard();
         $('body').append(div);
-        setUpSorting();
+        drawBoard(issues);
+        loadApiKey(issues);
         resizeColumns();
     }
 
