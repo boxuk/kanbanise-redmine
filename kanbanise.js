@@ -153,7 +153,7 @@
                 var assignedTo = null;
 
                 if( jQuery(value).children('.cf_30').length > 0) {
-                    storyPoints = jQuery(value).children('.cf_30')[0].innerText;
+                    storyPoints = jQuery(value).children('.cf_30')[0].textContent;
                     if(storyPoints && storyPoints.length > 0) {
                         storyPoints = storyPoints + " story points";
                     }
@@ -161,16 +161,16 @@
 
             
                 if( jQuery(value).children('.assigned_to').length > 0) {
-                    assignedTo = jQuery(value).children('.assigned_to')[0].innerText;
+                    assignedTo = jQuery(value).children('.assigned_to')[0].textContent;
                     if(assignedTo && assignedTo.length > 0) {
                         assignedTo = "Assigned to " + assignedTo;
                     }
                 }
 
                 issues[category].push({
-                    'id': jQuery(value).children('.id')[0].innerText,
-                    'priority': jQuery(value).children('.priority')[0].innerText,
-                    'subject': jQuery(value).children('.subject')[0].innerText,
+                    'id': jQuery(value).children('.id')[0].textContent,
+                    'priority': jQuery(value).children('.priority')[0].textContent,
+                    'subject': jQuery(value).children('.subject')[0].textContent,
                     'assignedTo': assignedTo,
                     'storyPoints': storyPoints
                 });
@@ -191,29 +191,52 @@
         function drawBoard(issues) {
             var div = $('div#kanban');
 
-            $.template('ticket', '<div id="issue-${id}" class="card ticket">'
+            var ticket = '<div id="issue-${id}" class="card ticket">'
                                + '<span class="story-points">${storyPoints}</span>'
                                + '<h3><a href="/issues/${id}">${subject}</a></h3>'
                                + '<span class="assigned-to">${assignedTo}</span>'
-                               + '</div>');
-            $.template('col', '<div class="list columnWrapper">'
+                               + '</div>';
+            var col = '<div class="list columnWrapper">'
                             + '  <div id="${id}" class="column">'
                             + '    <h1>${title}</h1>'
                             + '  </div>'
-                            + '</div>');
+                            + '</div>';
 
-            var col1Content = $.tmpl('ticket', issues['backlog']);
-            var col2Content = $.tmpl('ticket', issues['inProgress']);
-            var col3Content = $.tmpl('ticket', issues['resolved']);
-            var col4Content = $.tmpl('ticket', issues['done']);
+            var col1Content = '', col2Content = '', col3Content = '', col4Content = '';
+            var i = 0;
 
-            $(div).append($.tmpl('col', {title: 'Backlog', id: 'col1'}));
+            for(i = 0; i < issues['backlog'].length; i++) {
+                col1Content += ticket.replace('${id}', issues['backlog'][i].id)
+                                  .replace('${subject}', issues['backlog'][i].subject)
+                                  .replace('${storyPoints}', issues['backlog'][i].storyPoints ? issues['backlog'][i].storyPoints: '' )
+                                  .replace('${assignedTo}', issues['backlog'][i].assignedTo);
+            }
+            for(i = 0; i < issues['inProgress'].length; i++) {
+                col2Content += ticket.replace('${id}', issues['inProgress'][i].id)
+                                  .replace('${subject}', issues['inProgress'][i].subject)
+                                  .replace('${storyPoints}', issues['inProgress'][i].storyPoints ? issues['inProgress'][i].storyPoints: '' )
+                                  .replace('${assignedTo}', issues['inProgress'][i].assignedTo);
+            }
+            for(i = 0; i < issues['resolved'].length; i++) {
+                col3Content += ticket.replace('${id}', issues['resolved'][i].id)
+                                  .replace('${subject}', issues['resolved'][i].subject)
+                                  .replace('${storyPoints}', issues['resolved'][i].storyPoints ? issues['resolved'][i].storyPoints: '' )
+                                  .replace('${assignedTo}', issues['resolved'][i].assignedTo);
+            }
+            for(i = 0; i < issues['done'].length; i++) {
+                col4Content += ticket.replace('${id}', issues['done'][i].id)
+                                  .replace('${subject}', issues['done'][i].subject)
+                                  .replace('${storyPoints}', issues['done'][i].storyPoints ? issues['done'][i].storyPoints: '' )
+                                  .replace('${assignedTo}', issues['done'][i].assignedTo);
+            }
+
+            $(div).append(col.replace('${title}', 'Backlog').replace('${id}', 'col1'));
             $(div).find('#col1').append(col1Content);
-            $(div).append($.tmpl('col', {title: 'In progress', id: 'col2'}));
+            $(div).append(col.replace('${title}', 'In progress').replace('${id}', 'col2'));
             $(div).find('#col2').append(col2Content);
-            $(div).append($.tmpl('col', {title: 'Resolved/with QA', id: 'col3'}));
+            $(div).append(col.replace('${title}', 'Resolved/with QA').replace('${id}', 'col3'));
             $(div).find('#col3').append(col3Content);
-            $(div).append($.tmpl('col', {title: 'Done', id: 'col4'}));
+            $(div).append(col.replace('${title}', 'Done').replace('${id}', 'col4'));
             $(div).find('#col4').append(col4Content);
             $(div).append($('<div class="credits">Kanbanise ' + VERSION + ' - brought to you by <a href="http://www.boxuk.com/">Box UK</a></div>'));
 
@@ -254,25 +277,6 @@
         resizeColumns();
     }
 
-    // TODO a lot of copypasta to tidy up here
-
-    function loadTemplating() {
-        log("Loading templating...");
-        var done = false;
-        var script = document.createElement("script");
-        script.src = "//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js";
-        script.onload = script.onreadystatechange = function() {
-            if(!done && (!this.readyState || this.readyState === "loaded"
-                || this.readyState == "complete"))
-            {
-                log("Loaded templating");
-                done = true;
-                init_kanbanise();
-            }
-        };
-        document.getElementsByTagName("head")[0].appendChild(script);
-    }
-
     function loadJQueryUI() {
         log("Loading jQuery UI...");
         var done = false;
@@ -285,7 +289,7 @@
                 // jQuery plugin to do templating - TODO load this better
                 log("Loaded jQuery UI");
                 done = true;
-                loadTemplating();
+                init_kanbanise();
             }
         };
         document.getElementsByTagName("head")[0].appendChild(script);
@@ -316,7 +320,7 @@
     {
         loadJQuery();
     } else {
-        loadTemplating();
+        init_kanbanise();
     }
 
 }());
