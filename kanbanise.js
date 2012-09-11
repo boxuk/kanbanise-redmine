@@ -30,11 +30,27 @@
             return;
         }
 
-        var VERSION = '0.6';
+        var VERSION = '0.7';
         var API_KEY = null;
         // note: redmineRoot will not work if it's installed anywhere other than /, so
         // foo.com/redmine will not work
         var redmineRoot = window.location.protocol + "//" + window.location.host + "/";
+
+        /**
+         * The boards on the Kanban board should resize to fit content,
+         * then all resize to the height of the tallest board, to make it
+         * easy to drag/drop into them
+         */
+        function resizeColumns() {
+            var maxH = 0;
+            for(var i = 1; i <= 4; i++) {
+                $('#col' + i).height('auto');
+                if($('#col' + i).height() > maxH) {
+                    maxH = $('#col' + i).height();
+                }
+            }
+            $('.column').height(maxH);
+        }
 
         /**
          * Set up the board so it is sortable, draggable, droppable
@@ -206,22 +222,6 @@
             });
 
             return div;
-        }
-
-        /**
-         * The boards on the Kanban board should resize to fit content,
-         * then all resize to the height of the tallest board, to make it
-         * easy to drag/drop into them
-         */
-        function resizeColumns() {
-            var maxH = 0;
-            for(var i = 1; i <= 4; i++) {
-                $('#col' + i).height('auto');
-                if($('#col' + i).height() > maxH) {
-                    maxH = $('#col' + i).height();
-                }
-            }
-            $('.column').height(maxH);
         }
 
         /**
