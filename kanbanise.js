@@ -37,6 +37,54 @@
         var redmineRoot = window.location.protocol + "//" + window.location.host + "/";
 
         /**
+         * Set up the board so it is sortable, draggable, droppable
+         */
+        function setUpSorting() {
+            $('#col1, #col2, #col3, #col4').sortable({
+                stop: function(event, ui) {
+                    resizeColumns();
+
+                    var newStatus = $(ui.item).parent().find('h1').text();
+                    var newStatusId = 1;
+                    switch(newStatus.toLowerCase()) {
+                        case "backlog":
+                            newStatusId = 1; break;
+                        case "in progress":
+                            newStatusId = 2; break;
+                        case "resolved/with qa":
+                            newStatusId = 3; break;
+                        case "done":
+                            newStatusId = 5; break;
+                        default:
+                            return; // no action if unrecognised
+                    }
+
+                    if (API_KEY === null) {
+                        alert("No API key was set. Are you definitely logged in?");
+                    }
+
+                    var issueId = ui.item[0].id.replace('issue-', '');
+                    // only works if status codes are defaults that come with redmine! No funny business!
+                    showMessage("Saving changes...");
+                    jQuery.ajax(redmineRoot + 'issues/' + issueId + '.json', {
+                        headers: {
+                            'X-Redmine-API-Key': API_KEY,
+                            'Content-Type': 'application/json'
+                        },
+                        processData: false,
+                        dataType: 'json',
+                        data: JSON.stringify({issue:{status_id: newStatusId}}),
+                        type: 'PUT',
+                        complete: function(jqHXR, textStatus) {
+                            $(msgWin).fadeOut('slow');
+                        }
+                    });
+                },
+                connectWith: '.column'
+            }).disableSelection();
+        }
+
+        /**
          * Make a request to the account page and extract the API access key
          * User has to be logged in for this to work
          */    
@@ -174,54 +222,6 @@
                 }
             }
             $('.column').height(maxH);
-        }
-
-        /**
-         * Set up the board so it is sortable, draggable, droppable
-         */
-        function setUpSorting() {
-            $('#col1, #col2, #col3, #col4').sortable({
-                stop: function(event, ui) {
-                    resizeColumns();
-
-                    var newStatus = $(ui.item).parent().find('h1').text();
-                    var newStatusId = 1;
-                    switch(newStatus.toLowerCase()) {
-                        case "backlog":
-                            newStatusId = 1; break;
-                        case "in progress":
-                            newStatusId = 2; break;
-                        case "resolved/with qa":
-                            newStatusId = 3; break;
-                        case "done":
-                            newStatusId = 5; break;
-                        default:
-                            return; // no action if unrecognised
-                    }
-
-                    if (API_KEY === null) {
-                        alert("No API key was set. Are you definitely logged in?");
-                    }
-
-                    var issueId = ui.item[0].id.replace('issue-', '');
-                    // only works if status codes are defaults that come with redmine! No funny business!
-                    showMessage("Saving changes...");
-                    jQuery.ajax(redmineRoot + 'issues/' + issueId + '.json', {
-                        headers: {
-                            'X-Redmine-API-Key': API_KEY,
-                            'Content-Type': 'application/json'
-                        },
-                        processData: false,
-                        dataType: 'json',
-                        data: JSON.stringify({issue:{status_id: newStatusId}}),
-                        type: 'PUT',
-                        complete: function(jqHXR, textStatus) {
-                            $(msgWin).fadeOut('slow');
-                        }
-                    });
-                },
-                connectWith: '.column'
-            }).disableSelection();
         }
 
         /**
