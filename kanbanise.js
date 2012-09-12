@@ -30,7 +30,7 @@
             return;
         }
 
-        var VERSION = '0.7';
+        var VERSION = '0.8';
         var API_KEY = null;
         // note: redmineRoot will not work if it's installed anywhere other than /, so
         // foo.com/redmine will not work
@@ -206,25 +206,25 @@
             var i = 0;
 
             for(i = 0; i < issues['backlog'].length; i++) {
-                col1Content += ticket.replace('${id}', issues['backlog'][i].id)
+                col1Content += ticket.replace(/\$\{id\}/gi, issues['backlog'][i].id)
                                   .replace('${subject}', issues['backlog'][i].subject)
                                   .replace('${storyPoints}', issues['backlog'][i].storyPoints ? issues['backlog'][i].storyPoints: '' )
                                   .replace('${assignedTo}', issues['backlog'][i].assignedTo);
             }
             for(i = 0; i < issues['inProgress'].length; i++) {
-                col2Content += ticket.replace('${id}', issues['inProgress'][i].id)
+                col2Content += ticket.replace(/\$\{id\}/gi, issues['inProgress'][i].id)
                                   .replace('${subject}', issues['inProgress'][i].subject)
                                   .replace('${storyPoints}', issues['inProgress'][i].storyPoints ? issues['inProgress'][i].storyPoints: '' )
                                   .replace('${assignedTo}', issues['inProgress'][i].assignedTo);
             }
             for(i = 0; i < issues['resolved'].length; i++) {
-                col3Content += ticket.replace('${id}', issues['resolved'][i].id)
+                col3Content += ticket.replace(/\$\{id\}/gi, issues['resolved'][i].id)
                                   .replace('${subject}', issues['resolved'][i].subject)
                                   .replace('${storyPoints}', issues['resolved'][i].storyPoints ? issues['resolved'][i].storyPoints: '' )
                                   .replace('${assignedTo}', issues['resolved'][i].assignedTo);
             }
             for(i = 0; i < issues['done'].length; i++) {
-                col4Content += ticket.replace('${id}', issues['done'][i].id)
+                col4Content += ticket.replace(/\$\{id\}/gi, issues['done'][i].id)
                                   .replace('${subject}', issues['done'][i].subject)
                                   .replace('${storyPoints}', issues['done'][i].storyPoints ? issues['done'][i].storyPoints: '' )
                                   .replace('${assignedTo}', issues['done'][i].assignedTo);
