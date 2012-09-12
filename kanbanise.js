@@ -245,10 +245,10 @@
             });
 
             // Close Kanbanise on `esc`
-            $(document).keyup(function(e){
-              if(e.keyCode == 27){
-                $('#kanban').remove();
-              }
+            $(document).keyup(function(e) {
+                if(e.keyCode == 27){
+                    $('#kanban').remove();
+                }
             });
 
             return div;
