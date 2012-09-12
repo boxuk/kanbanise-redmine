@@ -10,7 +10,6 @@
         }
     }
 
-
     function init_kanbanise() {
 
         var msgWin = null;
@@ -241,7 +240,8 @@
             $(div).append($('<div class="credits">Kanbanise ' + VERSION + ' - brought to you by <a href="http://www.boxuk.com/">Box UK</a></div>'));
 
             $(div).click(function() {
-                $('#kanban').remove();
+                showMessage("Press 'escape' to close");
+                $(msgWin).delay(3000).fadeOut('slow');
             });
 
             // Close Kanbanise on `esc`
@@ -293,7 +293,6 @@
             if(!done && (!this.readyState || this.readyState === "loaded"
                 || this.readyState == "complete"))
             {
-                // jQuery plugin to do templating - TODO load this better
                 log("Loaded jQuery UI");
                 done = true;
                 init_kanbanise();
