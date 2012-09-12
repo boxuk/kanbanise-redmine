@@ -103,7 +103,7 @@
         /**
          * Make a request to the account page and extract the API access key
          * User has to be logged in for this to work
-         */    
+         */
         function loadApiKey(issues) {
             showMessage("Loading API key...");
             jQuery.ajax(redmineRoot + 'my/account', {complete: function(jqHRX, text) {
@@ -146,7 +146,7 @@
                     case 'Resolved':
                     case 'Ready for QA':
                         category = 'resolved';
-                        break;            
+                        break;
                 }
 
                 var storyPoints = null;
@@ -159,7 +159,7 @@
                     }
                 }
 
-            
+
                 if( jQuery(value).children('.assigned_to').length > 0) {
                     assignedTo = jQuery(value).children('.assigned_to')[0].textContent;
                     if(assignedTo && assignedTo.length > 0) {
@@ -244,6 +244,13 @@
                 $('#kanban').remove();
             });
 
+            // Close Kanbanise on `esc`
+            $(document).keyup(function(e) {
+                if(e.keyCode == 27){
+                    $('#kanban').remove();
+                }
+            });
+
             return div;
         }
 
@@ -253,7 +260,7 @@
         function addStyling() {
             $("<style type='text/css'> .ui-state-hover{ background: blue !important; }"
             + "#kanban { z-index:1000;position:absolute;left:0;top:0;width:100%;min-height:100%;background:#164B69; }"
-            + ".story-points { float:right;font-size:11px;}" 
+            + ".story-points { float:right;font-size:11px;}"
             + ".card, .column { border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; }"
             + ".card { background: #fefefe; padding: 5px;}"
             + ".card h3{ display: block; margin-bottom: 0.2em; overflow: hidden;}"
