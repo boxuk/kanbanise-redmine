@@ -49,6 +49,7 @@ Kanbanise.prototype.applyTemplateCol = function(title, id, cards) {
 };
 
 Kanbanise.prototype.init = function() {
+    "use strict";
 
     var msgWin = null;
     var self = this;
@@ -161,7 +162,6 @@ Kanbanise.prototype.init = function() {
      * Scrape a screenful of issues in Redmine
      */
     function getIssues() {
-
         var issues = {
             'backlog': [],
             'inProgress': [],
@@ -256,6 +256,7 @@ Kanbanise.prototype.init = function() {
      * Add CSS rules to document header
      */
     function addStyling() {
+
         $("<style type='text/css'> .ui-state-hover{ background: blue !important; }"
         + "#kanban { z-index:1000;position:absolute;left:0;top:0;width:100%;min-height:100%;background:#164B69; }"
         + ".story-points { float:right;font-size:11px;}"
@@ -286,6 +287,11 @@ Kanbanise.prototype.init = function() {
     "use strict";
     var MIN_JQUERY_VERSION = '1.8.1';
     var k = new Kanbanise();
+
+    // if running in unit test mode
+    if(typeof('jasmine') !== 'undefined') {
+        return;
+    }
 
     function loadJQueryUI() {
         Kanbanise.log("Loading jQuery UI...");
