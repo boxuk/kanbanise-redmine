@@ -211,7 +211,6 @@ Kanbanise.prototype.init = function() {
                 'storyPoints': storyPoints
             });
         });
-
         return issues;
     }
 
@@ -232,11 +231,10 @@ Kanbanise.prototype.init = function() {
         var col3Content = self.applyTemplateTicket(issues['resolved']);
         var col4Content = self.applyTemplateTicket(issues['done']);
 
-
         $(div).append(self.applyTemplateCol('Backlog', 'col1', col1Content));
-        $(div).append(self.applyTemplateCol('Backlog', 'col2', col2Content));
-        $(div).append(self.applyTemplateCol('Backlog', 'col3', col3Content));
-        $(div).append(self.applyTemplateCol('Backlog', 'col4', col4Content));
+        $(div).append(self.applyTemplateCol('In progress', 'col2', col2Content));
+        $(div).append(self.applyTemplateCol('Resolved/with QA', 'col3', col3Content));
+        $(div).append(self.applyTemplateCol('Done', 'col4', col4Content));
         $(div).append($('<div class="credits">Kanbanise ' + VERSION + ' - brought to you by <a href="http://www.boxuk.com/">Box UK</a></div>'));
 
         $(div).click(function() {
@@ -282,12 +280,10 @@ Kanbanise.prototype.init = function() {
     drawBoard(issues);
     loadApiKey(issues);
     resizeColumns();
-
 };
 
 (function () {
     "use strict";
-
     var MIN_JQUERY_VERSION = '1.8.1';
     var k = new Kanbanise();
 
@@ -337,4 +333,3 @@ Kanbanise.prototype.init = function() {
     }
 
 }());
-
