@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RS Components Filing" default="build">
+    
+    <target name="build" depends="test-js"/>
+
+    <target name="test-js" description="Run unit tests in Jasmine format">
+        <exec executable="jasmine-test" />
+    </target>
+</project>

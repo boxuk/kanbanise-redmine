@@ -1,3 +1,5 @@
+EnvJasmine.load(EnvJasmine.jsDir + "kanbanise.js");
+
 describe("Kanbanise", function() {
     var k;
     var sampleIssues = {
@@ -24,5 +26,6 @@ describe("Kanbanise", function() {
         var colContent = k.applyTemplateCol('Test', 'colTest', backlogContent).html();
         expect(colContent).toContain('<h1>Test</h1>')
         expect(colContent).toContain('assigned-to">Assigned to John Chapp');
+        expect(colContent).toContain('assigned-to">Assigned to John Chapxp');
     });
 });
