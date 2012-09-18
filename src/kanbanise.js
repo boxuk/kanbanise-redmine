@@ -96,7 +96,8 @@ Kanbanise.prototype.init = function() {
     function setUpSorting() {
         $('.sortable').sortable({
             placeholder: "card ticket placeholder",
-            stop: function(event, ui) {
+            revert: true,
+            receive: function(event, ui) {
                 resizeColumns();
                 var newStatus = $(ui.item).parent().parent().find('h1').text();
                 var newStatusId = 1;
