@@ -21,7 +21,7 @@ Kanbanise.prototype.templateCol = '<div class="list columnWrapper">\n'
  */
 Kanbanise.log = function(msg)  {
     if(window.console && window.console.log) {
-        console.log(msg);
+        window.console.log(msg);
     }
 };
 
@@ -289,7 +289,7 @@ Kanbanise.prototype.init = function() {
     var k = new Kanbanise();
 
     // if running in unit test mode
-    if(typeof('jasmine') !== 'undefined') {
+    if(typeof(jasmine) !== 'undefined') {
         return;
     }
 
@@ -326,6 +326,8 @@ Kanbanise.prototype.init = function() {
         };
         document.getElementsByTagName("head")[0].appendChild(script);
     }
+
+    Kanbanise.log("Loading Kanbanise...");
 
     // Ensure jQuery and jQuery UI are loaded and available before
     // loading kanbanise
