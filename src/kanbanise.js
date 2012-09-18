@@ -2,16 +2,16 @@
 
 function Kanbanise() {}
 
-Kanbanise.prototype.templateTicket = '<div id="issue-${id}" class="card ticket">\n'
+Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket">\n'
                + '  <span class="story-points">${storyPoints}</span>\n'
                + '  <h3><a href="/issues/${id}">${subject}</a></h3>\n'
                + '  <span class="assigned-to">${assignedTo}</span>\n'
-               + '</div>\n';
+               + '</li>\n';
 
 Kanbanise.prototype.templateCol = '<div class="list columnWrapper">\n'
                + '  <div id="${id}" class="column">\n'
                + '    <h1>${title}</h1>\n'
-               + '    ${cards}\n'
+               + '    <ul class="sortable">${cards}</ul>\n'
                + '  </div>\n'
                + '</div>\n';
 
@@ -87,18 +87,18 @@ Kanbanise.prototype.init = function() {
                 maxH = $('#col' + i).height();
             }
         }
-        $('.column').height(maxH);
+        $('.sortable').height(maxH);
     }
 
     /**
      * Set up the board so it is sortable, draggable, droppable
      */
     function setUpSorting() {
-        $('#col1, #col2, #col3, #col4').sortable({
+        $('.sortable').sortable({
+            placeholder: "card ticket placeholder",
             stop: function(event, ui) {
                 resizeColumns();
-
-                var newStatus = $(ui.item).parent().find('h1').text();
+                var newStatus = $(ui.item).parent().parent().find('h1').text();
                 var newStatusId = 1;
                 switch(newStatus.toLowerCase()) {
                     case "backlog":
@@ -134,7 +134,7 @@ Kanbanise.prototype.init = function() {
                     }
                 });
             },
-            connectWith: '.column'
+            connectWith: '.sortable'
         }).disableSelection();
     }
 
@@ -152,6 +152,7 @@ Kanbanise.prototype.init = function() {
             API_KEY = hunk.substring(startKey, startKey + 40);
 
             setUpSorting();
+            $("<style type='text/css'>.sortable li {cursor:move;}</style>").appendTo("head");
             showMessage("Loaded API key");
 
             $(msgWin).delay(3000).fadeOut('slow');
@@ -256,20 +257,22 @@ Kanbanise.prototype.init = function() {
      * Add CSS rules to document header
      */
     function addStyling() {
-
-        $("<style type='text/css'> .ui-state-hover{ background: blue !important; }"
-        + "#kanban { z-index:1000;position:absolute;left:0;top:0;width:100%;min-height:100%;background:#164B69; }"
-        + ".story-points { float:right;font-size:11px;}"
-        + ".card, .column { border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; }"
-        + ".card { background: #fefefe; padding: 5px;}"
-        + ".card h3{ display: block; margin-bottom: 0.2em; overflow: hidden;}"
-        + ".column { margin:10px;padding:10px;background: #084563; box-shadow: 0 0 20px rgba(0, 0, 0, 0.6)}"
-        + ".column h1 { color: #fff;margin-bottom:4px;display:block; }"
-        + ".columnWrapper { float:left;width: 25%; }"
-        + ".assigned-to {display: block; font-size: 11px; text-transform: uppercase;}"
-        + ".credits { clear:both;color:#fff;font-size:0.7em;margin-left:20px;margin-bottom: 20px;}"
-        + ".credits a { color: #fff; font-weight: bold}"
-        + "div#msgWin {position:fixed;right:0px;top:0px;z-index:30000;background:black;border:white 1px solid;padding: 3px; color: #fff}"
+        $("<style type='text/css'> .ui-state-hover{ background: blue !important; }\n"
+        + "#kanban { z-index:1000;position:absolute;left:0;top:0;width:100%;min-height:100%;background:#164B69; }\n"
+        + ".story-points { float:right;font-size:11px;}\n"
+        + ".card, .column { border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; }\n"
+        + ".card { background: #fefefe; padding: 5px;}\n"
+        + ".card h3{ display: block; margin-bottom: 0.2em; overflow: hidden;}\n"
+        + ".column { margin:10px;padding:10px;background: #084563; box-shadow: 0 0 20px rgba(0, 0, 0, 0.6)}\n"
+        + ".column h1 { color: #fff;margin-bottom:4px;display:block; }\n"
+        + ".columnWrapper { float:left;width: 25%; }\n"
+        + ".assigned-to {display: block; font-size: 11px; text-transform: uppercase;}\n"
+        + ".credits { clear:both;color:#fff;font-size:0.7em;margin-left:20px;margin-bottom: 20px;}\n"
+        + ".credits a { color: #fff; font-weight: bold}\n"
+        + "div#msgWin {position:fixed;right:0px;top:0px;z-index:30000;background:black;border:white 1px solid;padding: 3px; color: #fff}\n"
+        + ".placeholder { height: 30px;background: yellow;}\n"
+        + "ul.sortable { list-style-type: none;padding:0;margin-left:0}\n"
+        + ".sortable li {cursor:wait;}\n"
         + "</style>").appendTo("head");
     }
 
