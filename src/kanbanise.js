@@ -1,4 +1,4 @@
-/*global console, alert*/
+/*global console, alert, jasmine*/
 
 function Kanbanise() {}
 
