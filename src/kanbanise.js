@@ -2,7 +2,7 @@
 
 function Kanbanise() {}
 
-Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket">\n'
+Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature}">\n'
                + '  <span class="story-points">${storyPoints}</span>\n'
                + '  <h3><a href="/issues/${id}">${subject}</a></h3>\n'
                + '  <span class="assigned-to">${assignedTo}</span>\n'
@@ -35,7 +35,8 @@ Kanbanise.prototype.applyTemplateTicket = function(data) {
         tmp += this.templateTicket.replace(/\$\{id\}/gi, data[i].id)
                  .replace('${subject}', data[i].subject)
                  .replace('${storyPoints}', data[i].storyPoints)
-                 .replace('${assignedTo}', data[i].assignedTo);
+                 .replace('${assignedTo}', data[i].assignedTo)
+                 .replace('${nature}', data[i].nature);
     }
 
     return tmp;
@@ -190,6 +191,7 @@ Kanbanise.prototype.init = function() {
 
             var storyPoints = '';
             var assignedTo = '';
+            var nature = '';
 
             if( jQuery(value).children('.cf_30').length > 0) {
                 storyPoints = jQuery(value).children('.cf_30')[0].textContent;
@@ -205,12 +207,20 @@ Kanbanise.prototype.init = function() {
                 }
             }
 
+            if( jQuery(value).children('.tracker').length > 0) {
+                var tracker = jQuery(value).children('.tracker')[0].textContent;
+                if(tracker && tracker.length > 0) {
+                    nature = "nature-" + tracker.toLowerCase();
+                }
+            }
+
             issues[category].push({
                 'id': jQuery(value).children('.id')[0].textContent,
                 'priority': jQuery(value).children('.priority')[0].textContent,
                 'subject': jQuery(value).children('.subject')[0].textContent,
                 'assignedTo': assignedTo,
-                'storyPoints': storyPoints
+                'storyPoints': storyPoints,
+                'nature': nature
             });
         });
         return issues;
@@ -263,6 +273,7 @@ Kanbanise.prototype.init = function() {
         + ".story-points { float:right;font-size:11px;}\n"
         + ".card, .column { border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; }\n"
         + ".card { background: #fefefe; padding: 5px;}\n"
+        + ".nature-features {background: #773F3F; color: white;}\n"
         + ".card h3{ display: block; margin-bottom: 0.2em; overflow: hidden;}\n"
         + ".column { margin:10px;padding:10px;background: #084563; box-shadow: 0 0 20px rgba(0, 0, 0, 0.6)}\n"
         + ".column h1 { color: #fff;margin-bottom:4px;display:block; }\n"
