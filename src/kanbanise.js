@@ -2,8 +2,8 @@
 
 function Kanbanise() {}
 
-Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature} ${severity} ${family}">\n'
-               + '  <a class="icon"/>\n'
+Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature_class} ${severity} ${family}">\n'
+               + '  <a class="icon" title="${nature_human}"/>\n'
                + '  <span class="story-points">${storyPoints}</span>\n'
                + '  <h3><a href="/issues/${id}">${subject}</a></h3>\n'
                + '  <span class="assigned-to">${assignedTo}</span>\n'
@@ -37,7 +37,8 @@ Kanbanise.prototype.applyTemplateTicket = function(data) {
                  .replace('${subject}', data[i].subject)
                  .replace('${storyPoints}', data[i].storyPoints)
                  .replace('${assignedTo}', data[i].assignedTo)
-                 .replace(/\$\{nature\}/gi, data[i].nature)
+                 .replace('${nature_class}', data[i].nature.class)
+                 .replace('${nature_human}', data[i].nature.human)
                  .replace('${severity}', data[i].severity)
                  .replace('${family}', data[i].family);
     }
@@ -194,7 +195,10 @@ Kanbanise.prototype.init = function() {
 
             var storyPoints = '';
             var assignedTo = '';
-            var nature = '';
+            var nature_class = '';
+            var nature_human = '';
+            var family = '';
+            var severity = '';
 
             if( jQuery(value).children('.story_points').length > 0) {
                 storyPoints = jQuery(value).children('.story_points')[0].textContent;
@@ -213,7 +217,8 @@ Kanbanise.prototype.init = function() {
             if( jQuery(value).children('.tracker').length > 0) {
                 var tracker = jQuery(value).children('.tracker')[0].textContent;
                 if(tracker && tracker.length > 0) {
-                    nature = "nature-" + tracker.replace(" ", "-").toLowerCase();
+                    nature_class = "nature-" + tracker.replace(" ", "-").toLowerCase();
+                    nature_human = "This ticket is a " + tracker;
                 }
             }
 
@@ -239,7 +244,10 @@ Kanbanise.prototype.init = function() {
                 'subject': jQuery(value).children('.subject')[0].textContent,
                 'assignedTo': assignedTo,
                 'storyPoints': storyPoints,
-                'nature': nature,
+                'nature': {
+                   'class': nature_class,
+                   'human': nature_human
+                },
                 'severity': severity,
                 'family': family
             });
