@@ -263,6 +263,8 @@ Kanbanise.prototype.init = function() {
         + ".story-points { float:right;font-size:11px;}\n"
         + ".card, .column { border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; }\n"
         + ".card { background: #fefefe; padding: 5px;}\n"
+
+
         + ".card h3{ display: block; margin-bottom: 0.2em; overflow: hidden;}\n"
         + ".column { margin:10px;padding:10px;background: #084563; box-shadow: 0 0 20px rgba(0, 0, 0, 0.6)}\n"
         + ".column h1 { color: #fff;margin-bottom:4px;display:block; }\n"
@@ -307,6 +309,7 @@ Kanbanise.prototype.init = function() {
                 || this.readyState == "complete"))
             {
                 Kanbanise.log("Loaded jQuery UI");
+                $.noConflict();
                 done = true;
                 k.init();
             }
