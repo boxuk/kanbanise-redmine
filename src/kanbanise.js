@@ -210,7 +210,7 @@ Kanbanise.prototype.init = function() {
             if( jQuery(value).children('.tracker').length > 0) {
                 var tracker = jQuery(value).children('.tracker')[0].textContent;
                 if(tracker && tracker.length > 0) {
-                    nature = "nature-" + tracker.toLowerCase();
+                    nature = "nature-" + tracker.replace(" ", "-").toLowerCase();
                 }
             }
 
@@ -273,8 +273,12 @@ Kanbanise.prototype.init = function() {
         + ".story-points { float:right;font-size:11px;}\n"
         + ".card, .column { border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; }\n"
         + ".card { background: #fefefe; padding: 5px;}\n"
-        + ".nature-features {background: #81ADB1; color: white;}\n"
-        + ".nature-defects {background: #773F3F; color: white;}\n"
+        + ".ticket a {color: #10384f;}\n"
+        + ".nature-features {background: #a0d3d8;}\n"
+        + ".nature-defects {background: #dfa878;}\n"
+        + ".nature-tasks {background: white;}\n"
+        + ".nature-product-ideas {background: #d9df78;}\n"
+        + ".nature-feedback {background: #dfa4dc;}\n"
         + ".card h3{ display: block; margin-bottom: 0.2em; overflow: hidden;}\n"
         + ".column { margin:10px;padding:10px;background: #084563; box-shadow: 0 0 20px rgba(0, 0, 0, 0.6)}\n"
         + ".column h1 { color: #fff;margin-bottom:4px;display:block; }\n"
