@@ -237,7 +237,10 @@ Kanbanise.prototype.init = function() {
         $(div).append(self.applyTemplateCol('In progress', 'col2', col2Content));
         $(div).append(self.applyTemplateCol('Resolved/with QA', 'col3', col3Content));
         $(div).append(self.applyTemplateCol('Done', 'col4', col4Content));
-        $(div).append($('<div class="credits">Kanbanise ' + VERSION + ' - brought to you by <a href="http://www.boxuk.com/">Box UK</a></div>'));
+        $(div).append($('<div class="credits">Kanbanise ' 
+                        + VERSION
+                        + ' - brought to you by <a href="http://www.boxuk.com/">Box UK</a>'
+                        + ' | <a href="http://github.com/boxuk/kanbanise-redmine/issues">Feedback</a></div>'));
 
         $(div).click(function() {
             showMessage("Press 'escape' to close");
