@@ -310,7 +310,7 @@ Kanbanise.prototype.init = function() {
         + ".ticket.nature-defects .icon {background: url(http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png) no-repeat; background-position: -356px -145px;}\n"
         + ".ticket.nature-product-ideas .icon {background: url(http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png); background-position: -20px -145px;}\n"
         + ".ticket.nature-feedback .icon {background: url(http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png); background-position: -91px -120px;}\n"
-        + ".ticket.children {width: 95%; margin-left: 2.8%;}\n"
+        + ".ticket.children {width: 92%; margin-left: 2.8%;}\n"
         + ".nature-features {border-left: 12px solid #a0d3d8;}\n"
         + ".nature-defects {border-left: 12px solid #dfa878;}\n"
         + ".nature-task {border-left: 12px solid white;}\n"
