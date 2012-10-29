@@ -2,7 +2,8 @@
 
 function Kanbanise() {}
 
-Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket">\n'
+Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature_class} ${severity} ${family}">\n'
+               + '  <a class="icon" title="${nature_human}"/>\n'
                + '  <span class="story-points">${storyPoints}</span>\n'
                + '  <h3><a href="/issues/${id}">${subject}</a></h3>\n'
                + '  <span class="assigned-to">${assignedTo}</span>\n'
@@ -35,7 +36,11 @@ Kanbanise.prototype.applyTemplateTicket = function(data) {
         tmp += this.templateTicket.replace(/\$\{id\}/gi, data[i].id)
                  .replace('${subject}', data[i].subject)
                  .replace('${storyPoints}', data[i].storyPoints)
-                 .replace('${assignedTo}', data[i].assignedTo);
+                 .replace('${assignedTo}', data[i].assignedTo)
+                 .replace('${nature_class}', data[i].nature.class)
+                 .replace('${nature_human}', data[i].nature.human)
+                 .replace('${severity}', data[i].severity)
+                 .replace('${family}', data[i].family);
     }
 
     return tmp;
@@ -190,9 +195,13 @@ Kanbanise.prototype.init = function() {
 
             var storyPoints = '';
             var assignedTo = '';
+            var nature_class = '';
+            var nature_human = '';
+            var family = '';
+            var severity = '';
 
-            if( jQuery(value).children('.cf_30').length > 0) {
-                storyPoints = jQuery(value).children('.cf_30')[0].textContent;
+            if( jQuery(value).children('.story_points').length > 0) {
+                storyPoints = jQuery(value).children('.story_points')[0].textContent;
                 if(storyPoints && storyPoints.length > 0) {
                     storyPoints = storyPoints + " story points";
                 }
@@ -205,12 +214,42 @@ Kanbanise.prototype.init = function() {
                 }
             }
 
+            if( jQuery(value).children('.tracker').length > 0) {
+                var tracker = jQuery(value).children('.tracker')[0].textContent;
+                if(tracker && tracker.length > 0) {
+                    nature_class = "nature-" + tracker.replace(" ", "-").toLowerCase();
+                    nature_human = "This ticket is a " + tracker;
+                }
+            }
+
+            if( jQuery(value).children('.cf_1').length > 0) {
+                var severity = jQuery(value).children('.cf_1')[0].textContent;
+                if(severity && severity.length > 0) {
+                    severity = "severity-" + severity.toLowerCase();
+                }
+            }
+
+            if( jQuery(value).children('.parent').length > 0) {
+                var family = jQuery(value).children('.parent')[0].textContent;
+                if(family && family.length > 0) {
+                   family = "children";
+                } else {
+                   family = "parent"; 
+                }
+            }
+
             issues[category].push({
                 'id': jQuery(value).children('.id')[0].textContent,
                 'priority': jQuery(value).children('.priority')[0].textContent,
                 'subject': jQuery(value).children('.subject')[0].textContent,
                 'assignedTo': assignedTo,
-                'storyPoints': storyPoints
+                'storyPoints': storyPoints,
+                'nature': {
+                   'class': nature_class,
+                   'human': nature_human
+                },
+                'severity': severity,
+                'family': family
             });
         });
         return issues;
@@ -263,6 +302,25 @@ Kanbanise.prototype.init = function() {
         + ".story-points { float:right;font-size:11px;}\n"
         + ".card, .column { border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; }\n"
         + ".card { background: #fefefe; padding: 5px;}\n"
+        + ".ticket a {color: #10384f;}\n"
+        + ".ticket .icon {float: right; height: 10px; opacity: 0.5;}"
+
+        + ".ticket.nature-task .icon {background: url(http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png) no-repeat; background-position: -380px -145px;}\n"
+        + ".ticket.nature-features .icon {background: url(http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png) no-repeat; background-position: -165px 0px;}\n"
+        + ".ticket.nature-defects .icon {background: url(http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png) no-repeat; background-position: -356px -145px;}\n"
+        + ".ticket.nature-product-ideas .icon {background: url(http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png); background-position: -20px -145px;}\n"
+        + ".ticket.nature-feedback .icon {background: url(http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png); background-position: -91px -120px;}\n"
+        + ".ticket.children {width: 92%; margin-left: 2.8%;}\n"
+        + ".nature-features {border-left: 12px solid #a0d3d8;}\n"
+        + ".nature-defects {border-left: 12px solid #dfa878;}\n"
+        + ".nature-task {border-left: 12px solid white;}\n"
+        + ".nature-product-ideas {border-left: 12px solid #d9df78;}\n"
+        + ".nature-feedback {border-left: 12px solid #dfa4dc;}\n"
+        + ".severity-blocker {}"
+        + ".severity-critical {}"
+        + ".severity-major {}"
+        + ".severity-moderate {}"
+
         + ".card h3{ display: block; margin-bottom: 0.2em; overflow: hidden;}\n"
         + ".column { margin:10px;padding:10px;background: #084563; box-shadow: 0 0 20px rgba(0, 0, 0, 0.6)}\n"
         + ".column h1 { color: #fff;margin-bottom:4px;display:block; }\n"
