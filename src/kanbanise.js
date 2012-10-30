@@ -61,7 +61,7 @@ Kanbanise.prototype.init = function() {
     var msgWin = null;
     var self = this;
     var $ = jQuery;
-    var VERSION = '0.12';
+    var VERSION = '0.13';
     var API_KEY = null;
     // note: redmineRoot will not work if it's installed anywhere other than /, so
     // foo.com/redmine will not work
