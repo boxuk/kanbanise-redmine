@@ -325,7 +325,7 @@ Kanbanise.prototype.init = function() {
         + ".severity-moderate {}"
 
         + ".card h3{ display: block; margin-bottom: 0.2em; overflow: hidden;}\n"
-        + ".column { margin:10px;padding:10px;background: #084563; box-shadow: 0 0 20px rgba(0, 0, 0, 0.6)}\n"
+        + ".column { border:1px solid rgba(255, 255, 255, 0.1);margin:10px;padding:10px 20px;background: #084563; box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3)}\n"
         + ".column h1 { color: #fff;margin-bottom:4px;display:block; }\n"
         + ".columnWrapper { float:left;width: 25%; }\n"
         + ".assigned-to {display: block; font-size: 11px; text-transform: uppercase;}\n"
