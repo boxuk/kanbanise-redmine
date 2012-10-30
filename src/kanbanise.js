@@ -305,7 +305,7 @@ Kanbanise.prototype.init = function() {
         + ".story-points { float:right;font-size:11px;}\n"
         + ".card, .column { border-radius: 4px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0px 0px 6px rgba(64, 116, 188, 0.4); margin: 0 0 7px 0; }\n"
         + ".card { background: #fefefe; padding: 5px;}\n"
-        + ".ticket {border-left: 12px solid #0B2330;}\n"
+        + ".ticket {border-left: 12px solid #212121;}\n"
         + ".ticket a {color: #10384f;}\n"
         + ".ticket .icon {float: right; height: 10px; opacity: 0.5;}"
 
