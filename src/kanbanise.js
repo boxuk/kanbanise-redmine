@@ -2,7 +2,7 @@
 
 function Kanbanise() {}
 
-Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature_class} ${severity} ${family}">\n'
+Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature_class}  ${severity} ${family}">\n'
                + '  <a class="icon" title="${nature_human}"/>\n'
                + '  <span class="story-points">${storyPoints}</span>\n'
                + '  <h3><a href="/issues/${id}">${subject}</a></h3>\n'
