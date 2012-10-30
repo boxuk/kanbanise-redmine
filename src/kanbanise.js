@@ -2,6 +2,8 @@
 
 function Kanbanise() {}
 
+// The ${placeholders} need the space and concatenation otherwise the bookmarklet
+// creator collapses them
 Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature_class} ' + '${severity} ' + '${family}">\n'
                + '  <a class="icon" title="${nature_human}"/>\n'
                + '  <span class="story-points">${storyPoints}</span>\n'
