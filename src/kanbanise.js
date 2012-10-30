@@ -37,7 +37,7 @@ Kanbanise.prototype.applyTemplateTicket = function(data) {
                  .replace('${subject}', data[i].subject)
                  .replace('${storyPoints}', data[i].storyPoints)
                  .replace('${assignedTo}', data[i].assignedTo)
-                 .replace('${nature_class}', data[i].nature.class)
+                 .replace('${nature_class}', data[i].nature.css)
                  .replace('${nature_human}', data[i].nature.human)
                  .replace('${severity}', data[i].severity)
                  .replace('${family}', data[i].family);
@@ -223,14 +223,14 @@ Kanbanise.prototype.init = function() {
             }
 
             if( jQuery(value).children('.cf_1').length > 0) {
-                var severity = jQuery(value).children('.cf_1')[0].textContent;
+                severity = jQuery(value).children('.cf_1')[0].textContent;
                 if(severity && severity.length > 0) {
                     severity = "severity-" + severity.toLowerCase();
                 }
             }
 
             if( jQuery(value).children('.parent').length > 0) {
-                var family = jQuery(value).children('.parent')[0].textContent;
+                family = jQuery(value).children('.parent')[0].textContent;
                 if(family && family.length > 0) {
                    family = "children";
                 } else {
@@ -245,7 +245,7 @@ Kanbanise.prototype.init = function() {
                 'assignedTo': assignedTo,
                 'storyPoints': storyPoints,
                 'nature': {
-                   'class': nature_class,
+                   'css': nature_class,
                    'human': nature_human
                 },
                 'severity': severity,
