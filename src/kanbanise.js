@@ -2,9 +2,7 @@
 
 function Kanbanise() {}
 
-// The ${placeholders} need the space and concatenation otherwise the bookmarklet
-// creator collapses them
-Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature_class} ' + '${severity} ' + '${family}">\n'
+Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature_class} ${severity} ${family}">\n'
                + '  <a class="icon" title="${nature_human}"/>\n'
                + '  <span class="story-points">${storyPoints}</span>\n'
                + '  <h3><a href="/issues/${id}">${subject}</a></h3>\n'
@@ -35,14 +33,16 @@ Kanbanise.prototype.applyTemplateTicket = function(data) {
     var tmp = '';
 
     for(var i = 0; i < data.length; i++) {
+        // The ${placeholders} need the space and concatenation otherwise the bookmarklet
+        // creator collapses them
         tmp += this.templateTicket.replace(/\$\{id\}/gi, data[i].id)
                  .replace('${subject}', data[i].subject)
                  .replace('${storyPoints}', data[i].storyPoints)
                  .replace('${assignedTo}', data[i].assignedTo)
-                 .replace('${nature_class}', data[i].nature.css)
-                 .replace('${nature_human}', data[i].nature.human)
-                 .replace('${severity}', data[i].severity)
-                 .replace('${family}', data[i].family);
+                 .replace('${nature_class}', ' ' + data[i].nature.css + ' ')
+                 .replace('${nature_human}', ' ' + data[i].nature.human + ' ')
+                 .replace('${severity}', ' ' + data[i].severity + ' ')
+                 .replace('${family}', ' ' + data[i].family + ' ');
     }
 
     return tmp;
