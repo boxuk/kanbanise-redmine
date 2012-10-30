@@ -382,6 +382,7 @@ Kanbanise.prototype.init = function() {
                 || this.readyState == "complete"))
             {
                 Kanbanise.log("loaded jQuery");
+                $.noConflict();
                 done = true;
                 loadJQueryUI();
             }
