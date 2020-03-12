@@ -1,11 +1,19 @@
 /*global console, alert, jasmine*/
 
+/* Default : "/" */ 
+var redmineSubURI = "/redmine/";
+var redmineRoot = window.location.protocol + "//" + window.location.host + redmineSubURI;
+var VERSION = '0.13';
+var API_KEY = null;
+var ISSUES_STATUSES = null;
+
+
 function Kanbanise() {}
 
 Kanbanise.prototype.templateTicket = '<li id="issue-${id}" class="card ticket ${nature_class} ${severity} ${family}">\n'
                + '  <a class="icon" title="${nature_human}"/>\n'
                + '  <span class="story-points">${storyPoints}</span>\n'
-               + '  <h3><a href="/issues/${id}">${subject}</a></h3>\n'
+               + '  <h3><a href="' + redmineSubURI  + 'issues/${id}">${subject}</a></h3>\n'
                + '  <span class="assigned-to">${assignedTo}</span>\n'
                + '</li>\n';
 
@@ -61,11 +69,6 @@ Kanbanise.prototype.init = function() {
     var msgWin = null;
     var self = this;
     var $ = jQuery;
-    var VERSION = '0.13';
-    var API_KEY = null;
-    // note: redmineRoot will not work if it's installed anywhere other than /, so
-    // foo.com/redmine will not work
-    var redmineRoot = window.location.protocol + "//" + window.location.host + "/";
 
     if($('body.action-index') == null || $('body.action-index').length === 0) {
         alert("This page doesn't look like a Redmine issues list! Please find some issues");
@@ -88,13 +91,15 @@ Kanbanise.prototype.init = function() {
      */
     function resizeColumns() {
         var maxH = 0;
-        for(var i = 1; i <= 4; i++) {
-            $('#col' + i).height('auto');
-            if($('#col' + i).height() > maxH) {
-                maxH = $('#col' + i).height();
+        for(var i = 0; i < ISSUES_STATUSES.length; i++) {
+            $('#col' + ISSUES_STATUSES[i].id).height('auto');
+            if($('#col' + ISSUES_STATUSES[i].id).height() > maxH) {
+                maxH = $('#col' + ISSUES_STATUSES[i].id).height();
             }
         }
         $('.sortable').height(maxH);
+        $('.sortable').css('min-height', maxH);
+        $('.sortable').css('height','100%');
     }
 
     /**
@@ -107,20 +112,20 @@ Kanbanise.prototype.init = function() {
             receive: function(event, ui) {
                 resizeColumns();
                 var newStatus = $(ui.item).parent().parent().find('h1').text();
-                var newStatusId = 1;
-                switch(newStatus.toLowerCase()) {
-                    case "backlog":
-                        newStatusId = 1; break;
-                    case "in progress":
-                        newStatusId = 2; break;
-                    case "resolved/with qa":
-                        newStatusId = 3; break;
-                    case "done":
-                        newStatusId = 5; break;
-                    default:
-                        return; // no action if unrecognised
+                var newStatusId = -1;
+
+                for(var i = 0; i < ISSUES_STATUSES.length; i ++) {
+                    if(ISSUES_STATUSES[i].name == newStatus) {
+                        newStatusId = ISSUES_STATUSES[i].id; 
+                        break;
+                    }
                 }
 
+                if(newStatusId == -1) {
+					alert('No action :(');
+                    return; // no action if unrecognised
+                }
+               
                 if (API_KEY === null) {
                     alert("No API key was set. Are you definitely logged in?");
                 }
@@ -150,50 +155,36 @@ Kanbanise.prototype.init = function() {
      * Make a request to the account page and extract the API access key
      * User has to be logged in for this to work
      */
-    function loadApiKey(issues) {
+    function loadApiKey() {
         showMessage("Loading API key...");
-        jQuery.ajax(redmineRoot + 'my/account', {complete: function(jqHRX, text) {
-            var responseText = jqHRX.responseText;
-            var start = responseText.indexOf("id='api-access-key'");
-            var hunk = responseText.substring(start, start+100);
-            var startKey = hunk.indexOf('>') + 1;
-            API_KEY = hunk.substring(startKey, startKey + 40);
-
-            setUpSorting();
-            $("<style type='text/css'>.sortable li {cursor:move;}</style>").appendTo("head");
-            showMessage("Loaded API key");
-
-            $(msgWin).delay(3000).fadeOut('slow');
-        }});
+        jQuery.ajax(
+            redmineRoot + 'my/account', 
+            {
+            async: false,
+            complete: function(jqHRX, text) {
+                var responseText = jqHRX.responseText;
+                var start = responseText.indexOf("id='api-access-key'");
+                var hunk = responseText.substring(start, start+100);
+                var startKey = hunk.indexOf('>') + 1;
+                API_KEY = hunk.substring(startKey, startKey + 40);
+            }
+        });
     }
 
     /**
      * Scrape a screenful of issues in Redmine
      */
     function getIssues() {
-        var issues = {
-            'backlog': [],
-            'inProgress': [],
-            'resolved': [],
-            'done': []
-        };
+
+        var issues = {};
+
+        for(i = 0; i < ISSUES_STATUSES.length; i++) {
+            issues[ISSUES_STATUSES[i].name] = [];
+        }    
 
         var rows = $('table.issues tr.issue');
         rows.each(function(index, value) {
-            var category = 'backlog';
-
-            switch(jQuery(value).children('.status')[0].innerHTML) {
-                case 'Closed':
-                    category = 'done';
-                    break;
-                case 'In Progress':
-                    category = 'inProgress';
-                    break;
-                case 'Resolved':
-                case 'Ready for QA':
-                    category = 'resolved';
-                    break;
-            }
+            var category = jQuery(value).children('.status')[0].innerHTML;
 
             var storyPoints = '';
             var assignedTo = '';
@@ -269,15 +260,14 @@ Kanbanise.prototype.init = function() {
     function drawBoard(issues) {
         var div = $('div#kanban');
 
-        var col1Content = self.applyTemplateTicket(issues['backlog']);
-        var col2Content = self.applyTemplateTicket(issues['inProgress']);
-        var col3Content = self.applyTemplateTicket(issues['resolved']);
-        var col4Content = self.applyTemplateTicket(issues['done']);
+        for(i = 0; i < ISSUES_STATUSES.length; i++) {
+            $(div).append(self.applyTemplateCol(
+                ISSUES_STATUSES[i].name,
+                'col' + ISSUES_STATUSES[i].id,
+                self.applyTemplateTicket(issues[ISSUES_STATUSES[i].name])
+            ));
+        }    
 
-        $(div).append(self.applyTemplateCol('Backlog', 'col1', col1Content));
-        $(div).append(self.applyTemplateCol('In progress', 'col2', col2Content));
-        $(div).append(self.applyTemplateCol('Resolved/with QA', 'col3', col3Content));
-        $(div).append(self.applyTemplateCol('Done', 'col4', col4Content));
         $(div).append($('<div class="credits">Kanbanise ' 
                         + VERSION
                         + ' - brought to you by <a href="http://www.boxuk.com/">Box UK</a>'
@@ -340,15 +330,46 @@ Kanbanise.prototype.init = function() {
         + "</style>").appendTo("head");
     }
 
+    function loadData() {
+        var issues_status = null;
+    
+        jQuery.ajax(redmineRoot + 'issue_statuses.json', {
+            headers: {
+                'X-Redmine-API-Key': API_KEY,
+                'Content-Type': 'application/json'
+            },
+            processData: false,
+            dataType: 'json',
+            data: JSON.stringify(),
+            type: 'GET',
+            async: false
+        }).done(function(response) {
+            ISSUES_STATUSES = response.issue_statuses; 
+        });
+        
+    }
+
+
     // main
     addStyling();
+    loadApiKey();
+    loadData();
     var issues = getIssues();
     var div = createBoard();
     $('body').append(div);
     drawBoard(issues);
-    loadApiKey(issues);
+    setUpSorting();
+    $("<style type='text/css'>.sortable li {cursor:move;}</style>").appendTo("head");
+    showMessage("Loaded API key");
+    $(msgWin).delay(3000).fadeOut('slow');
     resizeColumns();
+
+	// Redefine column size
+	var size = parseInt(100 / $('.columnWrapper').length);
+	$('.columnWrapper').css('width', size + '%');
+
 };
+
 
 (function () {
     "use strict";
